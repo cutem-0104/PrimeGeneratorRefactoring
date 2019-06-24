@@ -1,4 +1,5 @@
 import junit.framework.*;
+import java.util.*;
 
 public class TestGeneratePrimes extends TestCase {
     public static void main(String[] args) {
