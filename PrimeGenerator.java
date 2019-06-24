@@ -9,7 +9,7 @@
  * @version 9 Dec 1999 rcm
  */
 public class GeneratePrimes {
-    private static boolean[] isCrossed;
+    private static boolean[] crossedOut;
     private static int[] result;
 
     /**
@@ -19,53 +19,50 @@ public class GeneratePrimes {
         if (maxValue < 2) {
             return new int[0];
         } else {
-            initializeArrayOfIntegers(maxValue);
+            uncrossIntegersUpTo(maxValue);
             crossOutMultiples();
             putUncrossedIntegersIntoResult();
             return result;// 素数をリターン
         }
     }
 
-    private static void initializeArrayOfIntegers(int maxValue) {
-        isCrossed = new boolean[maxValue + 1];
-        for (int i = 2; i < isCrossed.length; i++) {
-            isCrossed[i] = false;
+    private static void uncrossIntegersUpTo(int maxValue) {
+        crossedOut = new boolean[maxValue + 1];
+        for (int i = 2; i < crossedOut.length; i++) {
+            crossedOut[i] = false;
         }
     }
 
     private static void crossOutMultiples() {
-        int maxPrimeFactor = calcMaxPrimeFactor();
-        for (int i = 2; i <= maxPrimeFactor; i++) {
+        int limit = determineIterationLimit();
+        for (int i = 2; i <= limit; i++) {
             if (notCrossed(i)) {
                 crossOutMultiplesOf(i);
             }
         }
     }
 
-    private static int calcMaxPrimeFactor() {
-    // pの倍数をすべて削除する。ただし、pは素数である。したがって、
-    // 削除される倍数はすべて、素数因子pと倍数因子qを掛け合わせた数
-    // として表現できる。もしpが配列サイズの平方根よりも大きい場合は、
-    // 倍数因子qが1より大きくなることはありえない。したがって、pは
-    // 配列に格納されている数の中で最大の素数因子であり、同時に
-    // 繰り返しの上限であることになる。
-        double maxPrimeFactor = Math.sqrt(isCrossed.length) +  1;
-        return (int) maxPrimeFactor;
+    private static int determineIterationLimit() {
+    // 配列に格納されているいかなる倍数も、その配列サイズの平方根に
+    // 等しいか、それよりも小さい素数因子を持っている。したがって、
+    // その平方根よりも大きな数の倍数をチェックする必要はない。
+        double iterationLimit = Math.sqrt(crossedOut.length);
+        return (int) iterationLimit;
     }
 
     private static void crossOutMultiplesOf(int i) {
-        for (int multiple = 2+i; multiple < isCrossed.length; multiple += i) {
-            isCrossed[multiple] = true;
+        for (int multiple = 2+i; multiple < crossedOut.length; multiple += i) {
+            crossedOut[multiple] = true;
         }
     }
 
     private static boolean notCrossed(int i) {
-        return isCrossed[i] == false;
+        return crossedOut[i] == false;
     }
 
     private static void putUncrossedIntegersIntoResult() {
         int[] result = new int[numberOfUncrossedIntegers()];
-        for (int j = 0, i = 2; i < isCrossed.length; i++) {
+        for (int j = 0, i = 2; i < crossedOut.length; i++) {
             if (notCrossed(i)) { // 素数であれば
                 result[j++] = i;
             }
@@ -74,7 +71,7 @@ public class GeneratePrimes {
 
     private static int numberOfUncrossedIntegers() {
         int count = 0;
-        for (int i = 2; i < isCrossed.length; i++) {
+        for (int i = 2; i < crossedOut.length; i++) {
             if (notCrossed(i)) {
                 count++;
             }
