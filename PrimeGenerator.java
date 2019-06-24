@@ -22,7 +22,7 @@ public class GeneratePrimes {
             initializeArrayOfIntegers(maxValue);
             crossOutMultiples();
             putUncrossedIntegersIntoResult();
-            return primes;// 素数をリターン
+            return result;// 素数をリターン
         }
     }
 
@@ -64,24 +64,21 @@ public class GeneratePrimes {
     }
 
     private static void putUncrossedIntegersIntoResult() {
-        int i;
-        int j;
-
-        // 見つけた素数の個数をカウント
-        int count = 0;
-        for (i = 0; i < f.length; i++) {
-            if (f[i]) {
-                count++; // カウントアップ
+        int[] result = new int[numberOfUncrossedIntegers()];
+        for (int j = 0, i = 2; i < isCrossed.length; i++) {
+            if (notCrossed(i)) { // 素数であれば
+                result[j++] = i;
             }
         }
+    }
 
-        int[] primes = new int[count];
-
-        // 素数の抜出
-        for (i = 0, j = 0; i < f.length; i++) {
-            if (f[i]) { // 素数であれば
-                primes[j++] = i;
+    private static int numberOfUncrossedIntegers() {
+        int count = 0;
+        for (int i = 2; i < isCrossed.length; i++) {
+            if (notCrossed(i)) {
+                count++;
             }
+            return count;
         }
     }
 }
