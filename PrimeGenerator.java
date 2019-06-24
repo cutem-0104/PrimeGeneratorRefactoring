@@ -9,7 +9,7 @@
  * @version 9 Dec 1999 rcm
  */
 public class GeneratePrimes {
-    private static boolean[] f;
+    private static boolean[] isCrossed;
     private static int[] result;
 
     /**
@@ -24,6 +24,43 @@ public class GeneratePrimes {
             putUncrossedIntegersIntoResult();
             return primes;// 素数をリターン
         }
+    }
+
+    private static void initializeArrayOfIntegers(int maxValue) {
+        isCrossed = new boolean[maxValue + 1];
+        for (int i = 2; i < isCrossed.length; i++) {
+            isCrossed[i] = false;
+        }
+    }
+
+    private static void crossOutMultiples() {
+        int maxPrimeFactor = calcMaxPrimeFactor();
+        for (int i = 2; i <= maxPrimeFactor; i++) {
+            if (notCrossed(i)) {
+                crossOutMultiplesOf(i);
+            }
+        }
+    }
+
+    private static int calcMaxPrimeFactor() {
+    // pの倍数をすべて削除する。ただし、pは素数である。したがって、
+    // 削除される倍数はすべて、素数因子pと倍数因子qを掛け合わせた数
+    // として表現できる。もしpが配列サイズの平方根よりも大きい場合は、
+    // 倍数因子qが1より大きくなることはありえない。したがって、pは
+    // 配列に格納されている数の中で最大の素数因子であり、同時に
+    // 繰り返しの上限であることになる。
+        double maxPrimeFactor = Math.sqrt(isCrossed.length) +  1;
+        return (int) maxPrimeFactor;
+    }
+
+    private static void crossOutMultiplesOf(int i) {
+        for (int multiple = 2+i; multiple < isCrossed.length; multiple += i) {
+            isCrossed[multiple] = true;
+        }
+    }
+
+    private static boolean notCrossed(int i) {
+        return isCrossed[i] == false;
     }
 
     private static void putUncrossedIntegersIntoResult() {
@@ -45,26 +82,6 @@ public class GeneratePrimes {
             if (f[i]) { // 素数であれば
                 primes[j++] = i;
             }
-        }
-    }
-
-    private static void crossOutMultiples() {
-        int i;
-        int j;
-        for (i = 2; i < Math.sqrt(f.length) + 1; i++) {
-            if (f[i]) { // iが除かれていなければ、その倍数を除く
-                for (j = 2 * i; j < f.length; j += i) {
-                    f[j] = false; // 倍数は素数ではない
-                }
-            }
-        }
-    }
-
-    private static void initializeArrayOfIntegers(int maxValue) {
-        f = new boolean[maxValue + 1];
-        f[0] = f[1] = false; // 素数でも倍数でもない
-        for (int i = 2; i < f.length; i++) {
-            f[i] = true;
         }
     }
 }
